@@ -1,4 +1,5 @@
 import pandas as pd
+from calculos import calcular_Fi, calcular_ri, calcular_Ri, calcular_pi, calcular_Pi 
 
 def obtener_csv_como_lista():
     # Leer el archivo CSV y almacenar las edades en una lista
@@ -7,10 +8,15 @@ def obtener_csv_como_lista():
         edades = [] # Lista para almacenar las edades
         for linea in archivo:
             linea = linea.rstrip("\n") # Eliminar el salto de línea
-            edades.append(int(linea)) # Convertir la edad a entero y agregarla a la lista
+            edades.append(int(linea)) # Convertir la línea a entero y añadir a la lista
         return edades
 
-def analisis_estadistico(lista_edades):
+
+# Obtener la lista de edades del archivo CSV
+lista_edades = obtener_csv_como_lista()
+
+
+def calcular_fi(lista_edades):
     fi = {} # Diccionario para almacenar las frecuencias absolutas simples
     # Calcular las frecuencias absolutas simples
     for i in lista_edades:
@@ -22,32 +28,30 @@ def analisis_estadistico(lista_edades):
     fi_ordenado = dict(sorted(fi.items()))
     
     # Crear DataFrame con las frecuencias absolutas
-    df = pd.DataFrame(list(fi_ordenado.items()), columns=['Edad', 'fi'])
-    
-    # realiza automanticamente la Frecuencia Absoluta Acumulada (Fi)
-    df['Fi'] = df['fi'].cumsum()
-
-    # realiza automanticamente la Frecuencia Relativa Simple (ri)
-    df['ri'] = (df['fi'] / df['fi'].sum()).round(4)
-
-    # realiza automanticamente la Frecuencia Relativa Acumulada (Ri)
-    df['Ri'] = df['ri'].cumsum()
-
-    # realiza automanticamente la Frecuencia Porcentual (pi%)
-    df['pi%'] = (df['ri'] * 100).round(2)
-
-    # realiza automanticamente la Frecuencia Porcentual Acumulada (Pi%)
-    df['Pi%'] = (df['Ri'] * 100).round(2)
+    df = pd.DataFrame(list(fi_ordenado.items()), columns=['Edades', 'fi'])
     
     return df
 
-# Obtener la lista de edades del archivo CSV
-lista_edades = obtener_csv_como_lista()
+def analisis_estadistico(lista_edades):
+    # Verifica si la lista de edades esta vacia o no es una lista
+    if not isinstance(lista_edades, list) or not lista_edades:
+        return "La lista de edades proporcionada no es válida."
+
+    # Calcular las frecuencias
+    df = calcular_fi(lista_edades)
+    
+    # Realizar los cálculos adicionales
+    df = calcular_Fi(df)
+    df = calcular_ri(df)
+    df = calcular_Ri(df)
+    df = calcular_pi(df)
+    df = calcular_Pi(df)
+    
+    # Devolver el DataFrame como un diccionario
+    return df.to_dict(orient='list')
+
 
 # Realizar el análisis estadístico
 resultados_estadisticos = analisis_estadistico(lista_edades)
 
 print(resultados_estadisticos)
-
-# Guardar los resultados en el portapapeles
-resultados_estadisticos.to_clipboard(index=False)
