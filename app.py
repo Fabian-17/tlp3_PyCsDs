@@ -2,31 +2,24 @@ import pandas as pd
 from calculos import calcular_Fi, calcular_ri, calcular_Ri, calcular_pi, calcular_Pi 
 
 def obtener_csv_como_lista():
-    # Leer el archivo CSV y almacenar las edades en una lista
-    with open('edades.csv', encoding='utf-8') as archivo:
-        next(archivo) # Ignorar la primera línea (encabezado)
-        edades = [] # Lista para almacenar las edades
-        for linea in archivo:
-            linea = linea.rstrip("\n") # Eliminar el salto de línea
-            edades.append(int(linea)) # Convertir la línea a entero y añadir a la lista
-        return edades
+    # Leer el archivo CSV
+    datos = pd.read_csv("edades.csv")
+    # Extraer los números de la columna 'edades'
+    numeros = datos['edades'].tolist()
 
+    return numeros
 
 # Obtener la lista de edades del archivo CSV
 lista_edades = obtener_csv_como_lista()
 
 
 def calcular_fi(lista_edades):
-    fi = {} # Diccionario para almacenar las frecuencias absolutas simples
-    # Calcular las frecuencias absolutas simples
-    for i in lista_edades:
-        if i in fi:
-            fi[i] += 1
-        else:
-            fi[i] = 1
+    # Convertir la lista de edades en una Serie de pandas
+    serie_edades = pd.Series(lista_edades)
+    # Calcular la frecuencia absoluta
+    fi = serie_edades.value_counts()
     # Ordenar el diccionario por las claves (edades) de menor a mayor
     fi_ordenado = dict(sorted(fi.items()))
-    
     # Crear DataFrame con las frecuencias absolutas
     df = pd.DataFrame(list(fi_ordenado.items()), columns=['Edades', 'fi'])
     
@@ -47,11 +40,12 @@ def analisis_estadistico(lista_edades):
     df = calcular_pi(df)
     df = calcular_Pi(df)
     
-    # Devolver el DataFrame como un diccionario
-    return df.to_dict(orient='list')
+    # Devolver el DataFrame
+    return df
 
 
 # Realizar el análisis estadístico
 resultados_estadisticos = analisis_estadistico(lista_edades)
 
-print(resultados_estadisticos)
+# Imprimir los resultados sin el índice
+print(resultados_estadisticos.to_string(index=False))
