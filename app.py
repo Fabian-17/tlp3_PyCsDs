@@ -1,16 +1,8 @@
 import pandas as pd
 from calculos import calcular_Fi, calcular_ri, calcular_Ri, calcular_pi, calcular_Pi 
 
-def obtener_csv_como_lista():
-    # Leer el archivo CSV
-    datos = pd.read_csv("edades.csv")
-    # Extraer los números de la columna 'edades'
-    numeros = datos['edades'].tolist()
-
-    return numeros
-
-# Obtener la lista de edades del archivo CSV
-lista_edades = obtener_csv_como_lista()
+# se declaro la lista
+lista_edades = [19,29,19,22,23,19,30,19,19,19,20,20,20,18,22,19,34,34,21,21,22,28,29,19,20,19,25,28,21,22]
 
 
 def calcular_fi(lista_edades):
